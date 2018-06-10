@@ -3,28 +3,80 @@ import React, {Component} from 'react';
 import {BrowserRouter as Router, Route, Link} from 'react-router-dom';
 import FeaturedMix from './FeaturedMix';
 import Header from './Header';
+import Home from './Home';
+import mixesData from '../data/mixes';
 
-const Home = () => <h1>Home</h1>;
 const Archive = () => <h1>Archive</h1>;
 const About = () => <h1>About</h1>;
 
 class App extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      playing: false,
+      currentMix: '',
+      mixIds: mixesData,
+      mix: null,
+      mixes: []
+    };
+  }
+
+  ///wonkysensitive/2018-mixtape-24/
+
+  fetchMixes = async () => {
+    const {mixIds} = this.state;
+    mixIds.map(async id => {
+      try {
+        const response = await fetch(`https://api.mixcloud.com/${id}`);
+        const data = await response.json();
+        this.setState((prevState, props) => ({
+          mixes: [...prevState.mixes, data]
+        }));
+      } catch (error) {
+        console.log(error);
+      }
+    });
+  };
+
   mountAudio = async () => {
     this.widget = Mixcloud.PlayerWidget(this.player);
     await this.widget.ready;
-    await this.widget.play();
-    console.log(this.widget);
+
+    this.widget.events.pause.on(() =>
+      this.setState({
+        playing: false
+      })
+    );
+
+    this.widget.events.play.on(() =>
+      this.setState({
+        playing: true
+      })
+    );
   };
 
   componentDidMount() {
     this.mountAudio();
+    this.fetchMixes();
   }
 
-  togglePlay = () => {
-    console.log('toggleplay');
-    this.widget.togglePlay();
-  };
+  actions = {
+    togglePlay: () => {
+      console.log('toggleplay');
+      this.widget.togglePlay();
+    },
 
+    playMix: mixName => {
+      const {currentMix} = this.state;
+      if (mixName === currentMix) {
+        return this.widget.togglePlay();
+      }
+      this.setState({
+        currentMix: mixName
+      });
+      this.widget.load(mixName, true);
+    }
+  };
   render() {
     return (
       <Router>
@@ -35,11 +87,8 @@ class App extends Component {
             <div className="w-50-l relative z-1">
               <Header />
               {/* Routed page*/}
-
-              <div>
-                <button onClick={this.togglePlay}>Play/Pause</button>
-              </div>
-              <Route exact path="/" component={Home} />
+              {/* Passing state and actions down so we can use them*/}
+              <Route exact path="/" component={() => <Home {...this.state} {...this.actions} />} />
               <Route path="/archive" component={Archive} />
               <Route path="/about" component={About} />
             </div>
