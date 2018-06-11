@@ -91,7 +91,7 @@ class App extends Component {
                 path="/archive"
                 component={() => <Archive {...this.state} {...this.actions} />}
               />
-              <Route path="/about" component={About} />
+              <Route path="/about" component={() => <About {...this.state} />} />
             </div>
             <iframe
               className="player db fixed bottom-0 z-5"
