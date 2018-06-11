@@ -4,10 +4,9 @@ import {BrowserRouter as Router, Route, Link} from 'react-router-dom';
 import FeaturedMix from './FeaturedMix';
 import Header from './Header';
 import Home from './Home';
+import About from './About';
 import Archive from './Archive';
 import mixesData from '../data/mixes';
-
-const About = () => <h1>About</h1>;
 
 class App extends Component {
   constructor(props) {
@@ -88,7 +87,10 @@ class App extends Component {
               {/* Routed page*/}
               {/* Passing state and actions down so we can use them*/}
               <Route exact path="/" component={() => <Home {...this.state} {...this.actions} />} />
-              <Route path="/archive" component={Archive} />
+              <Route
+                path="/archive"
+                component={() => <Archive {...this.state} {...this.actions} />}
+              />
               <Route path="/about" component={About} />
             </div>
             <iframe
