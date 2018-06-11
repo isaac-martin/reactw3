@@ -4,9 +4,9 @@ import {BrowserRouter as Router, Route, Link} from 'react-router-dom';
 import FeaturedMix from './FeaturedMix';
 import Header from './Header';
 import Home from './Home';
+import Archive from './Archive';
 import mixesData from '../data/mixes';
 
-const Archive = () => <h1>Archive</h1>;
 const About = () => <h1>About</h1>;
 
 class App extends Component {
@@ -20,8 +20,6 @@ class App extends Component {
       mixes: []
     };
   }
-
-  ///wonkysensitive/2018-mixtape-24/
 
   fetchMixes = async () => {
     const {mixIds} = this.state;
@@ -78,12 +76,13 @@ class App extends Component {
     }
   };
   render() {
+    const [firstMix = {}] = this.state.mixes;
     return (
       <Router>
         <div>
           <div className="flex-l justify-end">
             {/* Featured Mix */}
-            <FeaturedMix />
+            <FeaturedMix {...this.state} {...this.actions} {...firstMix} id={firstMix.key} />
             <div className="w-50-l relative z-1">
               <Header />
               {/* Routed page*/}
