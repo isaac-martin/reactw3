@@ -4,6 +4,7 @@ import {BrowserRouter as Router, Route, Link} from 'react-router-dom';
 import FeaturedMix from './FeaturedMix';
 import Header from './Header';
 import Home from './Home';
+import Show from './Show';
 import About from './About';
 import Archive from './Archive';
 import mixesData from '../data/mixes';
@@ -92,6 +93,10 @@ class App extends Component {
                 component={() => <Archive {...this.state} {...this.actions} />}
               />
               <Route path="/about" component={() => <About {...this.state} />} />
+              <Route
+                path="/show/:slug"
+                render={routeParams => <Show {...routeParams} {...this.state} />}
+              />
             </div>
             <iframe
               className="player db fixed bottom-0 z-5"
