@@ -1,5 +1,4 @@
 import React, {Component} from 'react';
-import Counter from './Counter';
 import Stat from './Stat';
 
 const About = ({mixes}) => (
